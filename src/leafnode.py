@@ -7,9 +7,12 @@ class LeafNode(HTMLNode):
 
     def to_html(self):
         if self.value is None:
-            raise ValueError()
+            raise ValueError("LeafNode needs tag")
         if self.tag is None:
             return self.value
-        props_text = ' '.join(map(lambda item: f'{item[0]}="{item[1]}"',
-                                  self.props.items())).strip()
-        return f'<{self.tag} {props_text}>{self.value}</{self.tag}>'
+        if self.props is None:
+            return f'<{self.tag}>{self.value}</{self.tag}>'
+
+        props_string = ' '.join(map(lambda item: f'{item[0]}="{item[1]}"',
+                                    self.props.items())).strip()
+        return f'<{self.tag} {props_string}>{self.value}</{self.tag}>'

@@ -25,6 +25,6 @@ class TestLeafNode(unittest.TestCase):
 
     def test_leafnode_novalue(self):
         node = LeafNode("p", None)
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValueError) as ex:
             node.to_html()
-
+        self.assertEqual(str(ex.exception), "LeafNode needs tag")
