@@ -1,7 +1,7 @@
 import unittest
 
 from textnode import TextNode, TextType
-from splitnodes import split_nodes_delimiter
+from splitnodes import split_nodes_delimiter, split_nodes_link, split_nodes_image
 
 
 class TestSplitNodes(unittest.TestCase):
@@ -32,4 +32,68 @@ class TestSplitNodes(unittest.TestCase):
                 TextNode("This is text with a `code block` word, but not type text",
                          TextType.ITALIC)
             ]
+        )
+
+    def test_splitnodesimage(self):
+        node = TextNode(
+                "This is text with an image ![to boot dev](https://www.boot.dev) and ![to youtube](https://www.youtube.com/@bootdotdev)",
+                TextType.TEXT,
+        )
+        new_nodes = split_nodes_image([node])
+        self.assertEqual(
+                new_nodes,
+                [
+                    TextNode("This is text with an image ", TextType.TEXT),
+                    TextNode("to boot dev", TextType.IMAGE, "https://www.boot.dev"),
+                    TextNode(" and ", TextType.TEXT),
+                    TextNode(
+                        "to youtube", TextType.IMAGE, "https://www.youtube.com/@bootdotdev"
+                    ),
+                ]
+        )
+
+    def test_splitnodesimage_nomatches(self):
+        node = TextNode(
+                "This is text without an image [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
+                TextType.TEXT,
+        )
+        new_nodes = split_nodes_image([node])
+        self.assertEqual(
+                new_nodes,
+                [
+                    TextNode("This is text without an image [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
+                    TextType.TEXT),
+                ]
+        )
+
+    def test_splitnodeslink(self):
+        node = TextNode(
+                "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
+                TextType.TEXT,
+        )
+        new_nodes = split_nodes_link([node])
+        self.assertEqual(
+                new_nodes,
+                [
+                    TextNode("This is text with a link ", TextType.TEXT),
+                    TextNode("to boot dev", TextType.LINK, "https://www.boot.dev"),
+                    TextNode(" and ", TextType.TEXT),
+                    TextNode(
+                        "to youtube", TextType.LINK, "https://www.youtube.com/@bootdotdev"
+                    ),
+                ]
+        )
+
+    def test_splitnodeslink_nomatches(self):
+        node = TextNode(
+                "This is text without a link ![to boot dev](https://www.boot.dev) and ![to youtube](https://www.youtube.com/@bootdotdev)",
+                TextType.TEXT,
+        )
+        new_nodes = split_nodes_link([node])
+        self.assertEqual(
+                new_nodes,
+                [
+                    TextNode("This is text without a link ![to boot dev](https://www.boot.dev) and ![to youtube](https://www.youtube.com/@bootdotdev)",
+                    TextType.TEXT),
+                ]
         )
