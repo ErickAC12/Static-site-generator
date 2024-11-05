@@ -1,7 +1,7 @@
 import unittest
 
 from textnode import TextNode, TextType
-from splitnodes import split_nodes_delimiter, split_nodes_link, split_nodes_image
+from splitnodes import split_nodes_delimiter, split_nodes_link, split_nodes_image, text_to_textnodes
 
 
 class TestSplitNodes(unittest.TestCase):
@@ -95,5 +95,31 @@ class TestSplitNodes(unittest.TestCase):
                 [
                     TextNode("This is text without a link ![to boot dev](https://www.boot.dev) and ![to youtube](https://www.youtube.com/@bootdotdev)",
                     TextType.TEXT),
+                ]
+        )
+
+    def test_splitnodes_totextnodes(self):
+        text = "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        self.assertEqual(
+                text_to_textnodes(text),
+                [
+                    TextNode("This is ", TextType.TEXT),
+                    TextNode("text", TextType.BOLD),
+                    TextNode(" with an ", TextType.TEXT),
+                    TextNode("italic", TextType.ITALIC),
+                    TextNode(" word and a ", TextType.TEXT),
+                    TextNode("code block", TextType.CODE),
+                    TextNode(" and an ", TextType.TEXT),
+                    TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+                    TextNode(" and a ", TextType.TEXT),
+                    TextNode("link", TextType.LINK, "https://boot.dev"),
+                ])
+
+    def test_splitnodes_totextnodes_nomatches(self):
+        text = "This text doesn't have any modifications"
+        self.assertEqual(
+                text_to_textnodes(text),
+                [
+                    TextNode("This text doesn't have any modifications", TextType.TEXT)
                 ]
         )
