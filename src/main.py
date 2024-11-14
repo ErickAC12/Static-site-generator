@@ -1,12 +1,24 @@
-from textnode import TextNode, TextType
+import os
+import shutil
 
 
 def main():
-    obj = TextNode(
-            "This is a text node",
-            TextType.BOLD,
-            "https://www.boot.dev")
-    print(obj)
+    if os.path.exists('../public'):
+        shutil.rmtree('../public')
+    os.mkdir('../public')
+
+    def copy_contents(src_dir, dest_dir):
+        for item in os.listdir(src_dir):
+            src_path = os.path.join(src_dir, item)
+            dest_path = os.path.join(dest_dir, item)
+
+            if os.path.isdir(src_path):
+                os.mkdir(dest_path)
+                copy_contents(src_path, dest_path)
+            else:
+                shutil.copy(src_path, dest_path)
+
+    copy_contents("./static", "./public")
 
 
 main()
