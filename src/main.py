@@ -1,6 +1,6 @@
 import os
 import shutil
-from generatepage import generate_page
+from generatepage import generate_page_recursively
 
 
 def main():
@@ -20,7 +20,7 @@ def main():
                 shutil.copy(src_path, dest_path)
 
     copy_contents("static", "public")
-    generate_page("content/index.md", "template.html", "public/index.html")
+    generate_page_recursively("content", "template.html", "public")
 
 
 main()
