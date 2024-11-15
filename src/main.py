@@ -1,11 +1,12 @@
 import os
 import shutil
+from generatepage import generate_page
 
 
 def main():
-    if os.path.exists('../public'):
-        shutil.rmtree('../public')
-    os.mkdir('../public')
+    if os.path.exists('public'):
+        shutil.rmtree('public')
+    os.mkdir('public')
 
     def copy_contents(src_dir, dest_dir):
         for item in os.listdir(src_dir):
@@ -18,7 +19,8 @@ def main():
             else:
                 shutil.copy(src_path, dest_path)
 
-    copy_contents("./static", "./public")
+    copy_contents("static", "public")
+    generate_page("content/index.md", "template.html", "public/index.html")
 
 
 main()
